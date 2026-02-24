@@ -1,10 +1,15 @@
 import os
 import asyncio
-from pyrogram import Client, filters
+from pyrogram import Client
+from pyrogram.handlers import MessageHandler
+from pyrogram.filters import command
 
-API_ID = int(os.environ.get("API_ID"))
-API_HASH = os.environ.get("API_HASH")
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
+API_ID = int(os.getenv("API_ID"))
+API_HASH = os.getenv("API_HASH")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+async def start_handler(client, message):
+    await message.reply_text("Bot running on Render 🚀")
 
 async def main():
     app = Client(
@@ -14,9 +19,7 @@ async def main():
         bot_token=BOT_TOKEN
     )
 
-    @app.on_message(filters.command("start"))
-    async def start(client, message):
-        await message.reply_text("Bot is running on Render 🚀")
+    app.add_handler(MessageHandler(start_handler, command("start")))
 
     await app.start()
     print("Bot Started Successfully!")
